@@ -1,0 +1,129 @@
+1639. Number of Ways to Form a Target String Given a Dictionary
+Solved
+Hard
+Topics
+Companies
+Hint
+You are given a list of strings of the same length words and a string target.
+
+Your task is to form target using the given words under the following rules:
+
+target should be formed from left to right.
+To form the ith character (0-indexed) of target, you can choose the kth character of the jth string in words if target[i] = words[j][k].
+Once you use the kth character of the jth string of words, you can no longer use the xth character of any string in words where x <= k. In other words, all characters to the left of or at index k become unusuable for every string.
+Repeat the process until you form the string target.
+Notice that you can use multiple characters from the same string in words provided the conditions above are met.
+
+Return the number of ways to form target from words. Since the answer may be too large, return it modulo 109 + 7.
+
+ 
+
+Example 1:
+
+Input: words = ["acca","bbbb","caca"], target = "aba"
+Output: 6
+Explanation: There are 6 ways to form target.
+"aba" -> index 0 ("acca"), index 1 ("bbbb"), index 3 ("caca")
+"aba" -> index 0 ("acca"), index 2 ("bbbb"), index 3 ("caca")
+"aba" -> index 0 ("acca"), index 1 ("bbbb"), index 3 ("acca")
+"aba" -> index 0 ("acca"), index 2 ("bbbb"), index 3 ("acca")
+"aba" -> index 1 ("caca"), index 2 ("bbbb"), index 3 ("acca")
+"aba" -> index 1 ("caca"), index 2 ("bbbb"), index 3 ("caca")
+Example 2:
+
+Input: words = ["abba","baab"], target = "bab"
+Output: 4
+Explanation: There are 4 ways to form target.
+"bab" -> index 0 ("baab"), index 1 ("baab"), index 2 ("abba")
+"bab" -> index 0 ("baab"), index 1 ("baab"), index 3 ("baab")
+"bab" -> index 0 ("baab"), index 2 ("baab"), index 3 ("baab")
+"bab" -> index 1 ("abba"), index 2 ("baab"), index 3 ("baab")
+ 
+
+Constraints:
+
+1 <= words.length <= 1000
+1 <= words[i].length <= 1000
+All strings in words have the same length.
+1 <= target.length <= 1000
+words[i] and target contain only lowercase English letters.
+public class Solution {
+
+    public int numWays(String[] words, String target) {
+        int wordLength = words[0].length();
+        int targetLength = target.length();
+
+        // Initialize DP table and frequency table
+        int[][] dp = new int[wordLength][targetLength];
+        for (int i = 0; i < wordLength; i++) {
+            Arrays.fill(dp[i], -1);
+        }
+        int[][] charFrequency = new int[wordLength][26];
+
+        // Store the frequency of every character at each index in the words
+        for (String word : words) {
+            for (int j = 0; j < wordLength; j++) {
+                int character = word.charAt(j) - 'a';
+                charFrequency[j][character]++;
+            }
+        }
+
+        return (int) getWords(words, target, 0, 0, dp, charFrequency);
+    }
+
+    private long getWords(
+        String[] words,
+        String target,
+        int wordsIndex,
+        int targetIndex,
+        int[][] dp,
+        int[][] charFrequency
+    ) {
+        int MOD = 1000000007;
+
+        // If the target is fully matched
+        if (targetIndex == target.length()) return 1;
+
+        // If we have no more columns in the words or not enough columns left to match
+        // the target
+        if (
+            wordsIndex == words[0].length() ||
+            words[0].length() - wordsIndex < target.length() - targetIndex
+        ) return 0;
+
+        // If already computed, return the stored result
+        if (
+            dp[wordsIndex][targetIndex] != -1
+        ) return dp[wordsIndex][targetIndex];
+
+        long countWays = 0;
+        int curPos = target.charAt(targetIndex) - 'a';
+
+        // Don't match any character of the target with the current word column
+        countWays += getWords(
+            words,
+            target,
+            wordsIndex + 1,
+            targetIndex,
+            dp,
+            charFrequency
+        );
+
+        // Match the current character of the target with the current word column
+        countWays +=
+            charFrequency[wordsIndex][curPos] *
+            getWords(
+                words,
+                target,
+                wordsIndex + 1,
+                targetIndex + 1,
+                dp,
+                charFrequency
+            );
+
+        // Store the result in dp and return the answer
+        dp[wordsIndex][targetIndex] = (int) (countWays % MOD);
+
+        return dp[wordsIndex][targetIndex];
+    }
+}
