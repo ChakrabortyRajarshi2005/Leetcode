@@ -1,0 +1,325 @@
+qUiRkY qUesTs (Easy)
+This problem has the exact same setup as qUiRkY qUesTs (Hard). The only difference between them is that in this version, you must solve the problem only for the given array.
+
+Suppose you have an array 
+B
+B. Consider performing the following operation on it:
+
+First, choose any non-empty subsequence of 
+B
+B.
+Then, replace each element of this subsequence with the MEX
+†
+†
+  of 
+B
+B.
+Note that while you choose a subsequence, the replacement is done with the MEX of the entire array 
+B
+B, not only the elements of the subsequence.
+For example, if 
+B
+=
+[
+1
+,
+0
+,
+4
+,
+1
+,
+2
+]
+B=[1,0,4,1,2] and you choose the subsequence 
+[
+1
+,
+0
+,
+1
+]
+[1,0,1], those elements will be replaced by the MEX of 
+B
+B (which equals 
+3
+3), to obtain 
+[
+3
+,
+3
+,
+4
+,
+3
+,
+2
+]
+[3,3,4,3,2].
+
+We define 
+f
+(
+B
+)
+f(B) to be the maximum possible sum of 
+B
+B that can be obtained by performing the given operation any number of times (possibly, zero).
+Note that since 
+B
+B is changed after a move, its MEX may also change for future moves.
+
+Now, for the actual problem.
+You are given an array 
+A
+A of length 
+N
+N. Compute 
+f
+(
+A
+)
+f(A).
+
+†
+†
+  The MEX (minimum excludant) of an array of integers is defined as the smallest non-negative integer which does not occur in the array. For example:
+
+The MEX of 
+[
+2
+,
+2
+,
+1
+]
+[2,2,1] is 
+0
+0 because 
+0
+0 is not in the array.
+The MEX of 
+[
+0
+,
+1
+,
+2
+]
+[0,1,2] is 
+3
+3 because 
+0
+,
+1
+,
+2
+0,1,2 are present in the array but 
+3
+3 is not.
+The MEX of 
+[
+3
+,
+0
+,
+1
+]
+[3,0,1] is 
+2
+2 because 
+0
+,
+1
+0,1 are present in the array but 
+2
+2 is not.
+Input Format
+The first line of input will contain a single integer 
+T
+T, denoting the number of test cases.
+Each test case consists of two lines of input.
+The first line of each test case contains a single integer 
+N
+N — the length of the array.
+The second line contains 
+N
+N space-separated integers 
+A
+1
+,
+A
+2
+,
+…
+,
+A
+N
+A 
+1
+​
+ ,A 
+2
+​
+ ,…,A 
+N
+​
+ 
+Output Format
+For each test case, print a single integer on a new line: the value of 
+f
+(
+A
+)
+f(A) for the given array 
+A
+A.
+
+Constraints
+1
+≤
+T
+≤
+1
+0
+5
+1≤T≤10 
+5
+ 
+1
+≤
+N
+≤
+2
+×
+1
+0
+5
+1≤N≤2×10 
+5
+ 
+0
+≤
+A
+i
+≤
+1
+0
+12
+0≤A 
+i
+​
+ ≤10 
+12
+ 
+The sum of 
+N
+N over all test cases won't exceed 
+2
+×
+1
+0
+5
+2×10 
+5
+ .
+Sample 1:
+Input
+Output
+3
+3
+4 6 5
+2
+0 2
+3
+1 2 3
+15
+4
+9
+Explanation:
+Test case 
+1
+1: It's optimal to not perform any operations, and obtain 
+15
+=
+4
++
+6
++
+5
+15=4+6+5 as the sum.
+
+Test case 
+2
+2: Consider the following sequence of operations:
+
+First, choose the subsequence 
+[
+2
+]
+[2] at index 
+2
+2, and replace it by the MEX of 
+A
+A (which is 
+1
+1).
+The array is now 
+[
+0
+,
+1
+]
+[0,1].
+Next, choose the entire array as the subsequence, and replace all elements by the MEX of 
+A
+A (which is now 
+2
+2).
+The array is now 
+[
+2
+,
+2
+]
+[2,2], with a sum of 
+4
+4. This is the maximum sum possible.
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+class Codechef
+{
+	public static void main (String[] args) throws java.lang.Exception
+	{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int t = Integer.parseInt(br.readLine());
+
+        while (t-- > 0) {
+            int n = Integer.parseInt(br.readLine());
+            long[] v = new long[n];
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for (int i = 0; i < n; i++) {
+                v[i] = Long.parseLong(st.nextToken());
+            }
+
+            long ans = 0;
+            for (long num : v) {
+                ans += num;
+            }
+
+            Arrays.sort(v);
+
+            long sum = ans;
+            for (int i = 0; i < n; i++) {
+                sum -= v[i];
+                ans = Math.max(ans, sum + (i + 1L) * (i + 1L)); 
+            }
+
+            ans = Math.max(ans, (long)n * n);
+
+            System.out.println(ans);
+        }
+    }
+}
