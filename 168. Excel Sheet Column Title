@@ -1,0 +1,78 @@
+168. Excel Sheet Column Title
+Solved
+Easy
+Topics
+Companies
+Given an integer columnNumber, return its corresponding column title as it appears in an Excel sheet.
+
+For example:
+
+A -> 1
+B -> 2
+C -> 3
+...
+Z -> 26
+AA -> 27
+AB -> 28 
+...
+ 
+
+Example 1:
+
+Input: columnNumber = 1
+Output: "A"
+Example 2:
+
+Input: columnNumber = 28
+Output: "AB"
+Example 3:
+
+Input: columnNumber = 701
+Output: "ZY"
+ 
+
+Constraints:
+
+1 <= columnNumber <= 231 - 1
+public static String convertToTitle(int columnNumber) {
+    StringBuilder str = new StringBuilder();
+    
+    while (columnNumber > 0) {
+        columnNumber--;  // Adjust for 1-based index
+        char ch = (char) (columnNumber % 26 + 'A');  // Directly map to letter
+        str.append(ch);
+        columnNumber /= 26;
+    }
+    
+    return str.reverse().toString();
+}
+import java.util.Scanner;
+public class stack {
+    public static String convertToTitle(int columnNumber){
+        StringBuilder str = new StringBuilder("");
+        while(columnNumber>0){
+            if(columnNumber % 26 == 0){
+                str.append('Z');
+                columnNumber = columnNumber / 26 - 1;
+                continue;
+            } else {
+                int remainder = columnNumber % 26;
+                int ASCII = remainder + 64 ;
+                char charecterToBeJoined = (char)ASCII;
+                str.append(charecterToBeJoined);
+                columnNumber = columnNumber / 26;
+                    }
+            
+        }
+        str.reverse();
+        return str.toString();
+    }
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter a Number of the column :");
+        int columnNumber = sc.nextInt();
+        String result = convertToTitle(columnNumber);
+        System.out.println(result);
+        
+    }
+}
